@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== "production") {
 // 型宣言
 export type Todo = {
   id: number;
-  todo: string;
+  title: string;
   completed: boolean;
 };
 
@@ -37,7 +37,7 @@ export async function getTodos(): Promise<Todo[]> {
 
 export async function addTodo(todo: string): Promise<Todo> {
   const res = await pool.query<Todo>(
-    "INSERT INTO todo (todo, completed) VALUES ($1, false) RETURNING *;",
+    "INSERT INTO todo (title, completed) VALUES ($1, false) RETURNING *;",
     [todo]
   );
   return res.rows[0];
