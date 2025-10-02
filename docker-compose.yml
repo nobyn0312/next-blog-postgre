@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: inoue       # 任意のユーザー名
+      POSTGRES_PASSWORD: password   # 任意のパスワード
+      POSTGRES_DB: todo-db           # デフォルトデータベース名
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+volumes:
+  db_data:
+
+networks:
+  backend-network:
+    driver: bridge
