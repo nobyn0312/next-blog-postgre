@@ -1,124 +1,139 @@
 "use client";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
-import { stringify } from "querystring";
-import { useEffect, useState } from "react";
-
-type Todo = {
+type Blog = {
   id: number;
   title: string;
-  completed: boolean;
+  content: string;
+  createdAt: string; // API からは ISO 文字列で取得
+  keyVisual: string;
 };
 
 export default function Home() {
-  const [inputText, setInputText] = useState("");
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [inputTitle, setInputTitle] = useState("");
+  const [inputContent, setInputContent] = useState("");
+  const [blogArray, setBlogArray] = useState<Blog[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  // DBからTodoを取得
-  const fetchTodos = async () => {
-    const res = await fetch("/api/todo");
+  // DB からブログ一覧を取得
+  const fetchBlogs = async () => {
+    const res = await fetch("/api/blog");
     const data = await res.json();
-    setTodos(data);
+    setBlogArray(data);
   };
 
   useEffect(() => {
-    fetchTodos();
+    fetchBlogs();
   }, []);
 
-  // 追加
-  const onClickAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText) return;
-    const res = await fetch("/api/todo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: inputText }),
-    });
-    const newTodo = await res.json();
-    setTodos([...todos, newTodo]);
+  // 投稿 or 編集
+  const onClickPost = async () => {
+    if (!inputTitle || !inputContent)
+      return alert("タイトルと内容を入力してください！");
 
-    console.log(newTodo)
-    setInputText("");
-  };
+    if (editingId !== null) {
+      // 編集
+      const res = await fetch("/api/blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingId, title: inputTitle, content: inputContent }),
+      });
+      const updated = await res.json();
+      setBlogArray((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
+      setEditingId(null);
+    } else {
+      // 新規投稿
+      const res = await fetch("/api/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: inputTitle, content: inputContent, keyVisual: "/next.svg" }),
+      });
+      const newBlog = await res.json();
+      setBlogArray((prev) => [newBlog, ...prev]);
+    }
 
-  // 完了
-  const onClickComplete = async (todo: Todo) => {
-    const res = await fetch("/api/todo", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: todo.id, completed: true }),
-    });
-    const updated = await res.json();
-    setTodos(todos.map((t) => (t.id === updated.id ? updated : t)));
-  };
-
-  // 戻す
-  const onClickBack = async (todo: Todo) => {
-    const res = await fetch("/api/todo", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: todo.id, completed: false }),
-    });
-    const updated = await res.json();
-    setTodos(todos.map((t) => (t.id === updated.id ? updated : t)));
+    setInputTitle("");
+    setInputContent("");
   };
 
   // 削除
-  const onClickDelete = async (todo: Todo) => {
-    await fetch("/api/todo", {
+  const onClickDelete = async (id: number) => {
+    await fetch("/api/blog", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: todo.id }),
+      body: JSON.stringify({ id }),
     });
-    setTodos(todos.filter((t) => t.id !== todo.id));
+    setBlogArray((prev) => prev.filter((b) => b.id !== id));
   };
 
-  // 編集
-  const onClickEdit = (todo: Todo) => {
-    setInputText(todo.title);
+  // 編集開始
+  const onClickEdit = (blog: Blog) => {
+    setInputTitle(blog.title);
+    setInputContent(blog.content);
+    setEditingId(blog.id);
   };
-
-  // 画面表示用に未完了・完了を分ける
-  const incompleteTodos = todos.filter((t) => !t.completed);
-  const completeTodos = todos.filter((t) => t.completed);
 
   return (
-    <>
-      <div>
-        <h1>Todo</h1>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <button onClick={onClickAdd}>登録</button>
+    <main className="min-h-screen bg-blue-50 py-12 px-4">
+      <div className="max-w-2xl mx-auto bg-white border-2 border-blue-300 rounded-2xl shadow-sm p-6 space-y-5">
+        <h1 className="text-2xl font-bold text-blue-700 text-center">ブログ投稿フォーム</h1>
+
+        <div className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="タイトルを入力"
+            value={inputTitle}
+            onChange={(e) => setInputTitle(e.target.value)}
+            className="w-full border border-blue-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+          />
+
+          <textarea
+            placeholder="記事の内容を入力"
+            value={inputContent}
+            onChange={(e) => setInputContent(e.target.value)}
+            className="w-full border border-blue-300 rounded-md px-4 py-2 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+          />
+
+          <button
+            onClick={onClickPost}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition-all duration-200"
+          >
+            投稿する
+          </button>
+        </div>
       </div>
 
-      <div>
-        <p>未完了</p>
-        <ul>
-          {incompleteTodos.map((todo) => (
-            <li key={todo.id}>
-              <span>{todo.title}</span>
-              <button onClick={() => onClickComplete(todo)}>完了</button>
-              <button onClick={() => onClickDelete(todo)}>削除</button>
-              <button onClick={() => onClickEdit(todo)}>編集</button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className="max-w-3xl mx-auto mt-12 space-y-6">
+        {blogArray.map((blog) => (
+          <div
+            key={blog.id}
+            className="bg-white shadow-md border border-blue-100 rounded-xl p-5 hover:shadow-lg transition-all duration-200"
+          >
+            <div className="text-sm text-gray-500 mb-2">{new Date(blog.createdAt).toLocaleString()}</div>
 
-      <div>
-        <p>完了済み</p>
-        <ul>
-          {completeTodos.map((todo) => (
-            <li key={todo.id}>
-              <span>{todo.title}</span>
-              <button onClick={() => onClickBack(todo)}>戻す</button>
-              <button onClick={() => onClickDelete(todo)}>削除</button>
-            </li>
-          ))}
-        </ul>
+            <Image src={blog.keyVisual} width={320} height={180} alt="写真" className="rounded-lg mb-4" />
+
+            <h2 className="text-xl font-bold text-blue-700 mb-2">{blog.title}</h2>
+            <p className="text-gray-700 whitespace-pre-wrap mb-4">{blog.content}</p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => onClickEdit(blog)}
+                className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg font-semibold"
+              >
+                編集
+              </button>
+              <button
+                onClick={() => onClickDelete(blog.id)}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold"
+              >
+                削除
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-    </>
+    </main>
   );
 }
