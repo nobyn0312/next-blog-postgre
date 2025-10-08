@@ -30,7 +30,7 @@ export default function Home() {
   // 投稿 or 編集
   const onClickPost = async () => {
     if (!inputTitle || !inputContent)
-      return alert("タイトルと内容を入力してください！");
+      return alert("タイトルと内容を入力");
 
     if (editingId !== null) {
       // 編集
