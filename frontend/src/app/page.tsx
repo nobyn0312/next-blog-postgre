@@ -74,7 +74,7 @@ export default function Home() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ id }),
 		});
-		setBlogArray((prev) => prev.filter((b) => b.id !== id));  
+		setBlogArray((prev) => prev.filter((b) => b.id !== id));
 	};
 
 	// 編集開始
@@ -166,3 +166,4 @@ export default function Home() {
 		</main>
 	);
 }
+
