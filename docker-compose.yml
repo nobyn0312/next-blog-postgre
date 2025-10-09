@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: postgres-db
     environment:
-      POSTGRES_USER: inoue       # 任意のユーザー名
+      POSTGRES_USER: user       # 任意のユーザー名
       POSTGRES_PASSWORD: password   # 任意のパスワード
-      POSTGRES_DB: todo-db           # デフォルトデータベース名
+      POSTGRES_DB: blog-db           # デフォルトデータベース名
     ports:
       - "5432:5432"
     volumes:
