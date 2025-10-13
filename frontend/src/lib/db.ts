@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
-
-// 全件取得
+// 全件
 export const getBlogs = async () => {
   return prisma.blog.findMany({
     orderBy: {
@@ -36,5 +34,3 @@ export const deleteBlog = async (id: number) => {
     where: { id },
   });
 };
-
-export default prisma;

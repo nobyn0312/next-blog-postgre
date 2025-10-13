@@ -2,6 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { getServerSession} from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+
 
 type Blog = {
 	id: number;
@@ -33,7 +36,7 @@ export default function Home() {
 		if (!inputTitle || !inputContent) return alert("タイトルと内容を入力");
 
 		if (editingId !== null) {
-			// 編集
+			// 編集なのでPUT
 			const res = await fetch("/api/blog", {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
@@ -83,6 +86,8 @@ export default function Home() {
 		setInputContent(blog.content);
 		setEditingId(blog.id);
 	};
+
+
 
 	return (
 		<main className='min-h-screen bg-blue-50 py-12 px-4'>
