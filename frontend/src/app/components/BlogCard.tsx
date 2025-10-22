@@ -9,7 +9,7 @@ type Props = {
   onClickDelete: (id: number) => void;
 };
 
-export default function BlogCard({ blog, onClickEdit, onClickDelete }: Props) {
+export default function BlogCard({ blog }: Props) {
   return (
     <div className="bg-white shadow-md border border-blue-100 rounded-xl p-5 hover:shadow-lg transition-all duration-200">
       <Link
@@ -32,7 +32,7 @@ export default function BlogCard({ blog, onClickEdit, onClickDelete }: Props) {
         <p className="text-gray-700 whitespace-pre-wrap mb-4">{blog.content}</p>
       </Link>
 
-      <div className="flex gap-3 mt-2">
+      {/* <div className="flex gap-3 mt-2">
         <button
           onClick={() => onClickEdit(blog)}
           className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg font-semibold"
@@ -45,7 +45,7 @@ export default function BlogCard({ blog, onClickEdit, onClickDelete }: Props) {
         >
           削除
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
