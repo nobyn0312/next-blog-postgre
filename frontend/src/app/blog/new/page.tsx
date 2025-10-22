@@ -74,7 +74,7 @@ const page = () => {
 	};
 
 	return (
-		<div>
+    <div className="max-w-3xl mx-auto mt-12 space-y-6">
 			<BlogForm
 				inputTitle={inputTitle}
 				inputContent={inputContent}
