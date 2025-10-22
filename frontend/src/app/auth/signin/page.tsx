@@ -74,7 +74,7 @@ export default function SigninPage() {
           <p className="text-gray-600 text-sm">
             アカウントをお持ちでない方は{" "}
             <a
-              href="/auth/signup"
+              href="  /signup"
               className="text-blue-600 hover:underline font-semibold"
             >
               新規登録ページへ
