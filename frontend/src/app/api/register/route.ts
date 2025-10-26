@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     // パスワードをハッシュ化
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // DBに登録
     const newUser = await prisma.user.create({
