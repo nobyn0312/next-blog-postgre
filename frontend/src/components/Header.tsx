@@ -18,7 +18,7 @@ export default function Header() {
           <>
             <span className="text-white">
               {session.user?.email}
-            </span>
+          </span>
             <Link
             href="/blog/new/"
             className="text-sm text-white font-bold hover:underline"
