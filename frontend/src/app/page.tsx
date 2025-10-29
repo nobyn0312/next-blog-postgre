@@ -20,9 +20,7 @@ export default function Home() {
 	// const [inputTitle, setInputTitle] = useState("");
 	// const [inputContent, setInputContent] = useState("");
 	const [blogArray, setBlogArray] = useState<Blog[]>([]);
-	// const [editingId, setEditingId] = useState<number | null>(null);
 
-	// DB からブログ一覧を取得
 	const fetchBlogs = async () => {
 		const res = await fetch("/api/blog");
 		const data = await res.json();
