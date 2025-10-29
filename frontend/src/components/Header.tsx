@@ -25,6 +25,12 @@ export default function Header() {
           >
             ブログ投稿
           </Link>
+          <Link
+            href="/dashboard/"
+            className="text-sm text-white font-bold hover:underline"
+          >
+            ダッシュボード
+          </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
               className="text-sm text-white font-bold hover:underline"

@@ -9,6 +9,18 @@ export const getBlogs = async () => {
 	});
 };
 
+// ユーザーIDでフィルタリング
+export const getBlogsByUserId = async (userId: number) => {
+	return prisma.blog.findMany({
+		where: {
+			userId: userId,
+		},
+		orderBy: {
+			createdAt: "desc",
+		},
+	});
+};
+
 // 新規作成
 export const addBlog = async (
 	title: string,
