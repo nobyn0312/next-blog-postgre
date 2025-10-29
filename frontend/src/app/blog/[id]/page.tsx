@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
+import DeleteButton from "@/app/components/DeleteButton";
+import EditButton from "@/app/components/EditButton";
 
 type Props = {
   params: {
@@ -36,17 +38,24 @@ export default async function BlogDetail({ params }: Props) {
           />
         )}
 
-        <h1 className="text-3xl font-bold text-blue-700 text-center">
-          {blog.title}
-        </h1>
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-blue-700 text-center">
+              {blog.title}
+            </h1>
 
-        <p className="text-sm text-gray-500 text-center">
-          {new Date(blog.createdAt).toLocaleDateString("ja-JP", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+            <p className="text-sm text-gray-500 text-center mt-2">
+              {new Date(blog.createdAt).toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+          
+          <DeleteButton blogId={blog.id} />
+          <EditButton blogId={blog.id} />
+        </div>
 
         <article className="text-gray-700 leading-relaxed whitespace-pre-wrap">
           {blog.content}
